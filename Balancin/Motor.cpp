@@ -23,31 +23,40 @@ class Motor {
     digitalWrite(_pinAtras, LOW);
     digitalWrite(_pinAdelante, LOW);
     analogWrite(_pinPotencia, 0);
+    _sentidoGiro = 0;
   }
 
-  void avanzar(byte velocidad){
+  void avanzar(int velocidad){
     digitalWrite(_pinAtras, LOW);
     digitalWrite(_pinAdelante, HIGH);
-    delay(10);
+
+    if(_sentidoGiro!=1)
+      romperInercia();
+
     analogWrite(_pinPotencia, velocidad);
+    _sentidoGiro = 1;
   }
 
-   void retroceder(byte velocidad){
-    digitalWrite(_pinAtras, HIGH);
+   void retroceder(int velocidad){
     digitalWrite(_pinAdelante, LOW);
-    delay(10);
+    digitalWrite(_pinAtras, HIGH);
+
+    if(_sentidoGiro!=2)
+      romperInercia();
     analogWrite(_pinPotencia, velocidad);
+    _sentidoGiro = 2;
   }
 
   void romperInercia(){
-    avanzar(255);
-    retroceder(255);
+    analogWrite(_pinPotencia, 255);
+    delay(5);
   }
   
   private:
     int _pinAdelante = 0;
     int _pinAtras = 0;
     int _pinPotencia = 0;
+    int _sentidoGiro = 0;
 };
 
 #endif
